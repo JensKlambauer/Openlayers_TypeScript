@@ -1,0 +1,35 @@
+{
+    "compilerOptions": {
+        // "baseUrl": ".",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "lib": [
+            // dom needed for angular http://stackoverflow.com/a/42604094/516433
+            "dom",
+            "es2015"
+        ],
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "noImplicitAny": false,
+        // "outDir": "./dist/out-tsc",
+        // "declaration": false,
+        "preserveConstEnums": true,
+        "removeComments": false,
+        "sourceMap": true,
+        "watch": true,
+        "allowJs": true,
+        "target": "es5"
+    },
+    "include": [
+        "./lib/**/*",
+        "./src/**/*"
+    ],
+    "exclude": [
+        "./node_modules",
+        "./**/*.spec.ts"
+    ],
+    "typeRoots": [
+        "./src/viewer-openlayers/@types/",
+        "./node_modules/@types/"
+    ]
+}
