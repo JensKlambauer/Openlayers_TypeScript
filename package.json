@@ -5,7 +5,8 @@
   "description": "Openlayers mit Typescript",
   "license": "MIT",
   "repository": {
-    "type": "https://github.com/JensKlambauer/Openlayers_TypeScript.git"
+    "type": "TypeScript",
+    "url": "https://github.com/JensKlambauer/Openlayers_TypeScript.git"
   },
   "scripts": {
     "start": "electron electron/app.js",
