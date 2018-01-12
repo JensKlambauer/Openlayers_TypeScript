@@ -20,7 +20,7 @@ class SearchService implements ISearchService {
 
         const data = await WebRequest.json<any>(this.url + suchtext);
         let jsonConvert: JsonConvert = new JsonConvert();
-        jsonConvert.operationMode = OperationMode.LOGGING; // print some debug data
+        // jsonConvert.operationMode = OperationMode.LOGGING; // print some debug data
         // const res = data.map(obj =>  jsonConvert.deserialize(obj, Searchresult))
         const res = jsonConvert.deserializeArray(data, Searchresult);
         return res;
