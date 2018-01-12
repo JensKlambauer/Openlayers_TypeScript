@@ -21,6 +21,7 @@ import { ResetControl } from "./ResetControl";
 import { LayerSwitcher } from "./LayerSwitcher";
 import render from "ol/render/event";
 import { saveAs } from "file-saver";
+import { LandkreiseLayer, SachsenWMSDop, Siedlung, Gemeinden } from "./Layers";
 
 class MapService implements IMapService {
     private siedlung: Ol.layer.Tile;
@@ -28,6 +29,7 @@ class MapService implements IMapService {
     private osmLayer: Ol.layer.Tile;
     private sachsenLayer: Ol.layer.Tile;
     private gemeinden: Ol.layer.Tile;
+    private landkreise: Ol.layer.Vector;
     private zoomStufe = 12;
     private center: Ol.Coordinate = Proj.transform([13.2856, 51.2986], "EPSG:4326", "EPSG:3857");
     private deutschlandExtent = Proj.transformExtent([5.7, 47.00, 15.5, 55.20], "EPSG:4326", "EPSG:3857");
@@ -36,44 +38,10 @@ class MapService implements IMapService {
         this.osmLayer = new TileLayer({ source: new Osm(), visible: true });
         this.osmLayer.set("title", "OpenStreetMap");
         this.osmLayer.set("type", "base");
-        const sachsen = new TileWMS({
-            url: "https://geodienste.sachsen.de/wms_geosn_dop-rgb/guest",
-            params: {
-                LAYERS: "sn_dop_020",
-                SRID: "3857",
-            },
-        });
-        this.sachsenLayer = new TileLayer({ source: sachsen, visible: false });
-        this.sachsenLayer.set("title", "SachenDop");
-        this.sachsenLayer.set("type", "base");
-
-        this.siedlung = new TileLayer({
-            source: new TileWMS({
-                url: "https://geodienste.sachsen.de/wms_geosn_webatlas-sn/guest",
-                params: {
-                    "LAYERS": "Siedlung",
-                    "SRID": "3857",
-                    "MAP_TYPE": "Siedlung"
-                },
-                // crossOrigin: 'anonymous'
-            }),
-            visible: false,
-        });
-        this.siedlung.set("title", "Siedlung");
-
-        this.gemeinden = new TileLayer({
-            visible: false,
-            // minResolution: 2000,
-            // maxResolution: 20,
-            source: new TileWMS({
-                url: "http://sg.geodatenzentrum.de/wms_vg250",
-                params: {
-                    "LAYERS": ["vg250_gem", "vg250_krs"].join(),
-                    "SRID": "3857"
-                }
-            })
-        });
-        this.gemeinden.set("title", "Gemeinden");
+        this.sachsenLayer = new SachsenWMSDop();
+        this.siedlung = new Siedlung();
+        this.gemeinden = new Gemeinden();
+        this.landkreise = new LandkreiseLayer("Sachsen-LK");
     }
 
     public initMap(): void {
@@ -93,7 +61,7 @@ class MapService implements IMapService {
 
         const baseGrp = new Group({ layers: [this.sachsenLayer, this.osmLayer] });
         baseGrp.set("title", "Basis");
-        const overlayGrp = new Group({ layers: [this.siedlung, this.gemeinden] });
+        const overlayGrp = new Group({ layers: [this.siedlung, this.gemeinden, this.landkreise] });
         overlayGrp.set("title", "Overlays");
 
         this.map = new Map({
