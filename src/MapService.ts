@@ -22,6 +22,7 @@ import { LayerSwitcher } from "./LayerSwitcher";
 import render from "ol/render/event";
 import { saveAs } from "file-saver";
 import { LandkreiseLayer, SachsenWMSDop, Siedlung, Gemeinden } from "./Layers";
+import { KartenFeatures } from "./Features";
 
 class MapService implements IMapService {
     private siedlung: Ol.layer.Tile;
@@ -30,6 +31,7 @@ class MapService implements IMapService {
     private sachsenLayer: Ol.layer.Tile;
     private gemeinden: Ol.layer.Tile;
     private landkreise: Ol.layer.Vector;
+    private kartenFeats: Ol.layer.Vector;
     private zoomStufe = 12;
     private center: Ol.Coordinate = Proj.transform([13.2856, 51.2986], "EPSG:4326", "EPSG:3857");
     private deutschlandExtent = Proj.transformExtent([5.7, 47.00, 15.5, 55.20], "EPSG:4326", "EPSG:3857");
@@ -42,6 +44,7 @@ class MapService implements IMapService {
         this.siedlung = new Siedlung();
         this.gemeinden = new Gemeinden();
         this.landkreise = new LandkreiseLayer("Sachsen-LK");
+        this.kartenFeats = new KartenFeatures("Features");
     }
 
     public initMap(): void {
@@ -61,7 +64,7 @@ class MapService implements IMapService {
 
         const baseGrp = new Group({ layers: [this.sachsenLayer, this.osmLayer] });
         baseGrp.set("title", "Basis");
-        const overlayGrp = new Group({ layers: [this.siedlung, this.gemeinden, this.landkreise] });
+        const overlayGrp = new Group({ layers: [this.siedlung, this.gemeinden, this.landkreise, this.kartenFeats] });
         overlayGrp.set("title", "Overlays");
 
         this.map = new Map({

@@ -8,29 +8,132 @@ import TileLayer from "ol/layer/tile";
 import TileWMS from "ol/source/tilewms";
 import Collection from "ol/collection";
 import Feature from "ol/feature";
+import WKT from "ol/format/wkt";
+import ls from "ol/loadingstrategy";
+import * as $ from "jquery";
 
 class KartenFeatures extends Vector {
+    private vectorSource: VectorSource;
 
     constructor(title: string) {
+        super();
+        this.set("title", title);
+        this.setVisible(false);
+
         let features = new Collection<Feature>();
         const options: olx.source.VectorOptions = {
             features: features,
             format: new GeoJSON(),
-            strategy: ol.loadingstrategy.bbox,
+            strategy: ls.bbox,
         };
-        const vs = new VectorSource(options);
+
+        let loader = (extent, resolution, projection) => {
+            const url = "http://localhost:52000/Projekt/GetFeatures";
+            // const date = JSON.stringify({ "IdProj": 5, "Content": "Täßste" });
+            const feats = new Array<Feature>();
+            let res = this.callAjaxData(url, 18);
+            if (res.error === 0) {
+                const format = new WKT();
+                res.data.features.forEach((feat) => {
+                    const feature = format.readFeature(feat.Wkt, {
+                        dataProjection: "EPSG:4326",
+                        featureProjection: "EPSG:3857"
+                    });
+                    if (feature) {
+                        feature.setId(feat.Id);
+                        feats.push(feature);
+                    }
+                });
+                this.addFeatures(feats);
+            }
+        };
+        options.loader = loader;
+        this.vectorSource = new VectorSource(options);
+        this.setSource(this.vectorSource);
         const style = new Style({
-            fill: new Fill({color: "rgba(255, 0, 0, 0.0)"}),
-            stroke: new Stroke({ color: "#0000ff", width: 1})
+            fill: new Fill({ color: "rgba(255, 0, 0, 0.0)" }),
+            stroke: new Stroke({ color: "#0000ff", width: 2 })
         });
-
-        super({source: vs, visible: false, style: style });
-        this.set("title", title);
-
-        
+        this.setStyle(style);
+        // super({source: vectorSource, visible: false, style: style });
     }
 
+    private addFeatures(features: Array<Feature>): void {
+        if (features == null) {
+            return;
+        }
+
+        features.forEach(feat => {
+            this.vectorSource.addFeature(feat);
+        });
+    }
+
+    private callAjaxData(url: string, id: number): any {
+        let ret = { "error": 1 };
+        $.ajax({
+            url: url,
+            type: "POST",
+            dataType: "json",
+            // contentType: "application/json; charset=utf-8",
+            async: false, // entweder parameter oder default false
+            data: { "IdProj": id },
+            success: function (res) {
+                ret = res;
+            },
+            error: function (errorThrown) {
+                alert("AJAX fehlgeschlagen!");
+            }
+        }).done(function (res) {
+            // if (async || false)
+            // asyncCallbacks(asyncCb, res);
+        }).fail(function () {
+            console.log("Aufruf fehlgeschlagen." + url);
+            return false;
+        });
+
+        return ret;
+    }
+
+    // private loader (extent, resolution, projection): void  {
+    //     let vs = this.vectorSource;
+    //     const url = "http://localhost:52000/Projekt/GetFeatures";
+    //     const daten = JSON.stringify({ "IdProj": 5, "Content": "Täßste" });
+    //     $.ajax({
+    //         url: url,
+    //         type: "POST",
+    //         dataType: "json",
+    //         // contentType: "application/json; charset=utf-8",
+    //         // async: true,
+    //         data: { "IdProj": 18 },
+    //         success: function (res) {
+    //             if (res.error === 0) {
+    //                 const format = new WKT();
+    //                 res.data.features.forEach(function (feat) {
+    //                     const feature = format.readFeature(feat.Wkt, {
+    //                         dataProjection: "EPSG:4326",
+    //                         featureProjection: "EPSG:3857"
+    //                     });
+    //                     if (feature) {
+    //                         feature.setId(feat.Id);
+    //                         console.log("id " + feature.getId());
+    //                         vs.addFeature(feature);
+    //                     }
+    //                 });
+    //             }
+    //         },
+    //         error: function (errorThrown) {
+    //             alert("AJAX fehlgeschlagen! Error");
+    //         }
+    //     }).done(function (res) {
+    //         // alert("AJAX Done!");
+    //     }).fail(function () {
+    //         // alert("Aufruf fehlgeschlagen. Fail");
+    //         console.log("Aufruf fehlgeschlagen. Fail");
+    //     });
+    // }
 }
+
+export { KartenFeatures };
 
 
 
