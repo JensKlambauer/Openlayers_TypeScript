@@ -4,6 +4,7 @@ import GeoJSON from "ol/format/geojson";
 import Style from "ol/style/style";
 import Fill from "ol/style/fill";
 import Stroke from "ol/style/stroke";
+import Circle from "ol/style/circle";
 import TileLayer from "ol/layer/tile";
 import TileWMS from "ol/source/tilewms";
 import Collection from "ol/collection";
@@ -21,44 +22,21 @@ class KartenFeatures extends Vector {
         this.set("title", title);
         this.setVisible(false);
 
+        // VectorSource, Options
         let features = new Collection<Feature>();
         const options: olx.source.VectorOptions = {
             features: features,
             format: new GeoJSON(),
             strategy: ls.bbox,
         };
-
-        let loader = (extent: ol.Extent, resolution: number, proj: ol.proj.Projection): void => {
-            const url = "http://localhost:52000/Projekt/GetFeatures";
-            // const date = JSON.stringify({ "IdProj": 5, "Content": "Täßste" });
-            (async () => {
-                const feats = new Array<Feature>();
-                const res = await this.callAjaxData(url, 18);
-                // this.callAjaxData(url, 18).then( (res) => {
-                if (res.error === 0) {
-                    const format = new WKT();
-                    res.data.features.forEach((feat) => {
-                        const feature = format.readFeature(feat.Wkt, {
-                            dataProjection: "EPSG:4326",
-                            featureProjection: "EPSG:3857"
-                        });
-                        if (feature) {
-                            feature.setId(feat.Id);
-                            feats.push(feature);
-                        }
-                    });
-                    this.addFeatures(feats);
-                // }}).catch(() => { console.log("Fehler"); });
-                } else {
-                    console.log(res.message);
-                }})();
-        };
-        options.loader = loader;
+        options.loader = this.loader;
         this.vectorSource = new VectorSource(options);
         this.setSource(this.vectorSource);
+        // Style
         const style = new Style({
-            fill: new Fill({ color: "rgba(255, 0, 0, 0.0)" }),
-            stroke: new Stroke({ color: "#0000ff", width: 2 })
+            fill: new Fill({ color: "rgba(255, 0, 0, 0.1)" }),
+            stroke: new Stroke({ color: "#ff0000", width: 2 }),
+            image: new Circle({fill: new Fill({color: "#ff0000"}), radius: 5 })
         });
         this.setStyle(style);
         // super({source: vectorSource, visible: false, style: style });
@@ -102,43 +80,32 @@ class KartenFeatures extends Vector {
         return dataset;
     }
 
-    // private loader (extent, resolution, projection): void  {
-    //     let vs = this.vectorSource;
-    //     const url = "http://localhost:52000/Projekt/GetFeatures";
-    //     const daten = JSON.stringify({ "IdProj": 5, "Content": "Täßste" });
-    //     $.ajax({
-    //         url: url,
-    //         type: "POST",
-    //         dataType: "json",
-    //         // contentType: "application/json; charset=utf-8",
-    //         // async: true,
-    //         data: { "IdProj": 18 },
-    //         success: function (res) {
-    //             if (res.error === 0) {
-    //                 const format = new WKT();
-    //                 res.data.features.forEach(function (feat) {
-    //                     const feature = format.readFeature(feat.Wkt, {
-    //                         dataProjection: "EPSG:4326",
-    //                         featureProjection: "EPSG:3857"
-    //                     });
-    //                     if (feature) {
-    //                         feature.setId(feat.Id);
-    //                         console.log("id " + feature.getId());
-    //                         vs.addFeature(feature);
-    //                     }
-    //                 });
-    //             }
-    //         },
-    //         error: function (errorThrown) {
-    //             alert("AJAX fehlgeschlagen! Error");
-    //         }
-    //     }).done(function (res) {
-    //         // alert("AJAX Done!");
-    //     }).fail(function () {
-    //         // alert("Aufruf fehlgeschlagen. Fail");
-    //         console.log("Aufruf fehlgeschlagen. Fail");
-    //     });
-    // }
+    private loader = (extent: ol.Extent, resolution: number, proj: ol.proj.Projection): void => {
+        const url = "http://localhost:52000/Projekt/GetFeatures";
+        // const daten = JSON.stringify({ "IdProj": 5, "Content": "Täßste" });
+        (async () => {
+            const feats = new Array<Feature>();
+            const res = await this.callAjaxData(url, 18);
+            // this.callAjaxData(url, 18).then( (res) => {
+            if (res.error === 0) {
+                const format = new WKT();
+                res.data.features.forEach((feat) => {
+                    const feature = format.readFeature(feat.Wkt, {
+                        dataProjection: "EPSG:4326",
+                        featureProjection: "EPSG:3857"
+                    });
+                    if (feature) {
+                        feature.setId(feat.Id);
+                        feats.push(feature);
+                    }
+                });
+                this.addFeatures(feats);
+                // }}).catch(() => { console.log("Fehler"); });
+            } else {
+                console.log(res.message);
+            }
+        })();
+    }
 }
 
 export { KartenFeatures };
