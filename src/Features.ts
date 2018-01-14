@@ -10,6 +10,7 @@ import Collection from "ol/collection";
 import Feature from "ol/feature";
 import WKT from "ol/format/wkt";
 import ls from "ol/loadingstrategy";
+// import Extent from "ol/extent";
 import * as $ from "jquery";
 
 class KartenFeatures extends Vector {
@@ -27,25 +28,30 @@ class KartenFeatures extends Vector {
             strategy: ls.bbox,
         };
 
-        let loader = (extent, resolution, projection) => {
+        let loader = (extent: ol.Extent, resolution: number, proj: ol.proj.Projection): void => {
             const url = "http://localhost:52000/Projekt/GetFeatures";
             // const date = JSON.stringify({ "IdProj": 5, "Content": "Täßste" });
-            const feats = new Array<Feature>();
-            let res = this.callAjaxData(url, 18);
-            if (res.error === 0) {
-                const format = new WKT();
-                res.data.features.forEach((feat) => {
-                    const feature = format.readFeature(feat.Wkt, {
-                        dataProjection: "EPSG:4326",
-                        featureProjection: "EPSG:3857"
+            (async () => {
+                const feats = new Array<Feature>();
+                const res = await this.callAjaxData(url, 18);
+                // this.callAjaxData(url, 18).then( (res) => {
+                if (res.error === 0) {
+                    const format = new WKT();
+                    res.data.features.forEach((feat) => {
+                        const feature = format.readFeature(feat.Wkt, {
+                            dataProjection: "EPSG:4326",
+                            featureProjection: "EPSG:3857"
+                        });
+                        if (feature) {
+                            feature.setId(feat.Id);
+                            feats.push(feature);
+                        }
                     });
-                    if (feature) {
-                        feature.setId(feat.Id);
-                        feats.push(feature);
-                    }
-                });
-                this.addFeatures(feats);
-            }
+                    this.addFeatures(feats);
+                // }}).catch(() => { console.log("Fehler"); });
+                } else {
+                    console.log(res.message);
+                }})();
         };
         options.loader = loader;
         this.vectorSource = new VectorSource(options);
@@ -63,35 +69,37 @@ class KartenFeatures extends Vector {
             return;
         }
 
-        features.forEach(feat => {
+        features.forEach((feat, index, feats) => {
+            // console.log("idx: " + index);
             this.vectorSource.addFeature(feat);
         });
     }
 
-    private callAjaxData(url: string, id: number): any {
-        let ret = { "error": 1 };
-        $.ajax({
+    private async callAjaxData(url: string, id: number): Promise<any> {
+        let ret = { "error": 1, "message": "Fehler - Abfrage nicht erfolgreich." };
+        const dataset = await $.ajax({
             url: url,
+            crossDomain: true,
             type: "POST",
             dataType: "json",
+            // beforeSend: function (xhrObj) {
+            //     xhrObj.setRequestHeader("Content-Type", "application/json");
+            // },
             // contentType: "application/json; charset=utf-8",
-            async: false, // entweder parameter oder default false
+            async: true, // entweder parameter oder default false
             data: { "IdProj": id },
-            success: function (res) {
-                ret = res;
-            },
-            error: function (errorThrown) {
-                alert("AJAX fehlgeschlagen!");
-            }
-        }).done(function (res) {
-            // if (async || false)
-            // asyncCallbacks(asyncCb, res);
-        }).fail(function () {
-            console.log("Aufruf fehlgeschlagen." + url);
-            return false;
-        });
+            // data: JSON.stringify({ "IdProj": id }),
+            // error: function (errorThrown) {
+            //     // alert("AJAX fehlgeschlagen!");
+            //     console.log("AJAX fehlgeschlagen!");
+            //     // return ret;
+            // }
+        }).catch(() => { console.log("Catch Error"); return ret; });
+        // .then((data) => {
+        //     return data;
+        // });
 
-        return ret;
+        return dataset;
     }
 
     // private loader (extent, resolution, projection): void  {
