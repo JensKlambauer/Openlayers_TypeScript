@@ -59,6 +59,9 @@ module.exports = {
             filename: "index.html",
             template: path.join(root, "src", "index.ejs"),
         }),
+        new CopyWebpackPlugin([
+            { from: "content",  to: "files" }
+        ])
     ],
     devServer: {
         contentBase: path.join(__dirname, "dist"),

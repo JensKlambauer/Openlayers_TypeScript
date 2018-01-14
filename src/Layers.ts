@@ -12,7 +12,7 @@ class LandkreiseLayer extends Vector {
 
     constructor(title: string) {
         const options: olx.source.VectorOptions = {
-            url : "json/landkreiseSachsen.json",
+            url : "files/landkreiseSachsen.json",
             format: new GeoJSON(),  // { featureProjection: "EPSG:3857", defaultDataProjection: "EPSG:4326" }
         };
         const vs = new VectorSource(options);
