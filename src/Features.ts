@@ -54,19 +54,19 @@ class KartenFeatures extends Vector {
     }
 
     private async callAjaxData(url: string, id: number): Promise<any> {
-        let ret = { "error": 1, "message": "Fehler - Abfrage nicht erfolgreich." };
+        const ret = { "error": 1, "message": "Fehler - Abfrage nicht erfolgreich." };
         const dataset = await $.ajax({
             url: url,
-            crossDomain: true,
+            // crossDomain: true,
             type: "POST",
             dataType: "json",
             // beforeSend: function (xhrObj) {
             //     xhrObj.setRequestHeader("Content-Type", "application/json");
             // },
-            // contentType: "application/json; charset=utf-8",
+            contentType: "application/json; charset=utf-8",
             async: true, // entweder parameter oder default false
-            data: { "IdProj": id },
-            // data: JSON.stringify({ "IdProj": id }),
+            data: JSON.stringify(id),
+            // data: JSON.stringify({ "idProj": id }),
             // error: function (errorThrown) {
             //     // alert("AJAX fehlgeschlagen!");
             //     console.log("AJAX fehlgeschlagen!");
@@ -81,7 +81,7 @@ class KartenFeatures extends Vector {
     }
 
     private loader = (extent: ol.Extent, resolution: number, proj: ol.proj.Projection): void => {
-        const url = "http://localhost:52000/Projekt/GetFeatures";
+        const url = "http://localhost:61000/api/feature/GetFeatures";
         // const daten = JSON.stringify({ "IdProj": 5, "Content": "Täßste" });
         (async () => {
             const feats = new Array<Feature>();
@@ -90,7 +90,7 @@ class KartenFeatures extends Vector {
             if (res.error === 0) {
                 const format = new WKT();
                 res.data.features.forEach((feat) => {
-                    const feature = format.readFeature(feat.Wkt, {
+                    const feature = format.readFeature(feat.wkt, {
                         dataProjection: "EPSG:4326",
                         featureProjection: "EPSG:3857"
                     });
@@ -105,6 +105,7 @@ class KartenFeatures extends Vector {
                 console.log(res.message);
             }
         })();
+        // console.log("Loader Call");
     }
 }
 

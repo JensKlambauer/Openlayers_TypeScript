@@ -149,7 +149,7 @@ class MapService implements IMapService {
                     map.getView().fit(extentorg);
                     map.renderSync();
                     console.log("setTimeout " + map.getSize());
-                }, 100);
+                }, 1000);
             }
         };
 
