@@ -18,7 +18,7 @@ class KartenFeatures extends Vector {
     private vectorSource: VectorSource;
 
     constructor(title: string) {
-        super();
+        super();    // {title: title}
         this.set("title", title);
         this.setVisible(false);
 
