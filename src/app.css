@@ -1,8 +1,11 @@
 @import "~ol/ol.css";
-@import "./css/ol3-layerswitcher.css";
+@import "./css/ol-layerswitcher.css";
+@import "./css/ol-popup.css";
 
 body {
     padding: 10px;
+    font-family: sans-serif;
+    font-size: small;
 }
 
 .map {
