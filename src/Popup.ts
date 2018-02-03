@@ -1,12 +1,12 @@
 import Overlay from "ol/overlay";
 import Ol from "ol";
-// import { Coordinate } from "openlayers";
-// import Coordinate from "ol/coordinate";
 
 class Popup extends Overlay {
+
     private content: HTMLDivElement;
     private closer: HTMLAnchorElement;
     private container: HTMLDivElement;
+
     constructor(optOptions?: olx.OverlayOptions) {
 
         const options = optOptions || {};

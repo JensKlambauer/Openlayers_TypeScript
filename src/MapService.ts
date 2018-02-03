@@ -26,6 +26,7 @@ import { KartenFeatures } from "./Features";
 import { Popup } from "./Popup";
 
 class MapService implements IMapService {
+    private popup: Popup;
     private siedlung: Ol.layer.Tile;
     private map: Ol.Map;
     private osmLayer: Ol.layer.Tile;
@@ -87,41 +88,9 @@ class MapService implements IMapService {
         const switcher = new LayerSwitcher({ tipLabel: "Layeranzeige" });
         this.map.addControl(switcher);
 
-        const popup = new Popup();  // { id: "popup", autoPan: true,  autoPanAnimation: { source: null, duration: 250}}
-        this.map.addOverlay(popup);
-
-        this.map.on("singleclick", function(evt) {
-            const prettyCoord = Coordinate.toStringHDMS(Proj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326"), 2);
-            popup.show(evt.coordinate, "<div><h2>Coordinates</h2><p>" + prettyCoord + "</p></div>");
-        });
-
-        // let container = document.getElementById("popup");
-        // let content = document.getElementById("popup-content");
-        // let closer = document.getElementById("popup-closer");
-
-        // let overlay = new Overlay({
-        //     element: container,
-        //     autoPan: true,
-        //     autoPanAnimation: {
-        //         source: null,
-        //         duration: 250
-        //     }});
-
-        //     closer.onclick = function() {
-        //         overlay.setPosition(undefined);
-        //         closer.blur();
-        //         return false;
-        //       };
-        //       this.map.addOverlay(overlay);
-
-        // this.map.on("singleclick", function(evt) {
-        //         let coordinate = evt.coordinate;
-        //         let hdms = Coordinate.toStringHDMS(Proj.transform(
-        //             coordinate, "EPSG:3857", "EPSG:4326"));
-        //         content.innerHTML = "<p>You clicked here:</p><code>" + hdms +
-        //             "</code>";
-        //         overlay.setPosition(coordinate);
-        //       });
+        this.popup = new Popup();
+        this.map.addOverlay(this.popup);
+        this.map.on("singleclick", (evt) => this.popupShow(evt));
     }
 
     public jumpToPosition(lon: number, lat: number): boolean {
@@ -235,6 +204,11 @@ class MapService implements IMapService {
 
         // this.map.removeLayer(this.sachsenLayer);
         // this.map.addLayer(this.osmLayer);
+    }
+
+    private popupShow(evt: any): void {
+        const prettyCoord = Coordinate.toStringHDMS(Proj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326"), 2);
+        this.popup.show(evt.coordinate, "<div><h2>Coordinates</h2><p>" + prettyCoord + "</p></div>");
     }
 }
 
