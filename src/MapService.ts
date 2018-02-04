@@ -24,6 +24,7 @@ import { saveAs } from "file-saver";
 import { LandkreiseLayer, SachsenWMSDop, Siedlung, Gemeinden } from "./Layers";
 import { KartenFeatures } from "./Features";
 import { Popup } from "./Popup";
+import { InfoOverlay } from "./InfoOverlay";
 
 class MapService implements IMapService {
     private popup: Popup;
@@ -55,9 +56,9 @@ class MapService implements IMapService {
                 collapsible: true
             }),
             new MousePosition({
-                undefinedHTML: "außerhalb",
-                projection: "EPSG:4326",
                 coordinateFormat: coordinate => Coordinate.format(coordinate, "{x}, {y}", 5),
+                projection: "EPSG:4326",
+                undefinedHTML: "außerhalb",
             }),
             new ScaleLine(),
             new Zoom(),
@@ -75,10 +76,10 @@ class MapService implements IMapService {
             target: "map",
             view: new View({
                 center: Proj.transform([13.2856, 51.2986], "EPSG:4326", "EPSG:3857"),
+                maxZoom: 23,
+                minZoom: 7,
                 projection: Proj.get("EPSG:3857"),
                 zoom: 12,
-                minZoom: 7,
-                maxZoom: 23
             }),
         });
 
@@ -91,6 +92,22 @@ class MapService implements IMapService {
         this.popup = new Popup();
         this.map.addOverlay(this.popup);
         this.map.on("singleclick", (evt) => this.popupShow(evt));
+
+        const infoOverlay = new InfoOverlay();
+        this.map.addOverlay(infoOverlay);
+        infoOverlay.show(this.map.getView().getCenter(),
+            "<div> Bitte betroffene Region auf der Karte markieren: " +
+            "<ul><li>Stift anklicken</li>" +
+            "<li>Flächen zeichnen wählen</li>" +
+            "<li>Einzelklick in Karte setzt Punkt (Mobilgeräte maximal 5 Punkte) </li>" +
+            "<li>ansonsten auf den 1. Punkt klicken schließt Fläche</li><li>Hilfe: Tel: 0XXXXX XXXXXX </li>" +
+            "</ul></div>");
+
+        this.map.on("moveend", () => {
+            // Test Zentrierung die Info wenn die Karte bewegt wurde
+            // https://openlayers.org/en/latest/examples/moveend.html
+            infoOverlay.setPosition(this.map.getView().getCenter());
+        });
     }
 
     public jumpToPosition(lon: number, lat: number): boolean {
@@ -118,18 +135,18 @@ class MapService implements IMapService {
         const extentorg = this.map.getView().calculateExtent(size);
         const source = this.osmLayer.getSource();
 
-        const tileLoadStart = function() {
+        const tileLoadStart = function () {
             // console.log("loading " + loading);
             ++loading;
         };
 
         const map = this.map;
         // let extent = map.getView().calculateExtent([width, height]);
-        const tileLoadEnd = function() {
+        const tileLoadEnd = function () {
             ++loaded;
             if (loading === loaded) {
                 const canvas = this;
-                window.setTimeout(function() {
+                window.setTimeout(function () {
                     loading = 0;
                     loaded = 0;
                     const targetCanvas = document.createElement("canvas");
@@ -159,7 +176,7 @@ class MapService implements IMapService {
             }
         };
 
-        map.once("postcompose", function(event) {
+        map.once("postcompose", function (event) {
             source.on("tileloadstart", tileLoadStart);
             source.on("tileloadend", tileLoadEnd, event.context.canvas);
             source.on("tileloaderror", tileLoadEnd, event.context.canvas);
@@ -208,7 +225,7 @@ class MapService implements IMapService {
 
     private popupShow(evt: any): void {
         const prettyCoord = Coordinate.toStringHDMS(Proj.transform(evt.coordinate, "EPSG:3857", "EPSG:4326"), 2);
-        this.popup.show(evt.coordinate, "<div><h2>Coordinates</h2><p>" + prettyCoord + "</p></div>");
+        this.popup.show(evt.coordinate, "<div><h3>Koordinaten</h3><p>" + prettyCoord + "</p></div>");
     }
 }
 

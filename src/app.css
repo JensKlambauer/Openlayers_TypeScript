@@ -57,3 +57,14 @@ body {
     left: 85px;
     top: 0.4em !important;
 }
+
+#infoWindow {
+    display: none;
+    padding: 15px 15px 15px 15px;
+    width: 200px;
+    height: 180px;
+    border: 1px solid rgb(0, 0, 0);
+    border-radius: 10px;
+    background-color: rgb(255, 255, 255);
+    opacity: 1.0;
+}
