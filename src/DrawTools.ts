@@ -1,7 +1,7 @@
 import Control from "ol/control/control";
 
 class DrawTools extends Control {
-    // private element: HTMLDivElement;
+    private element: HTMLDivElement;
     private panel: HTMLDivElement;
     private shownClassName: string;
     private hiddenClassName: string;
@@ -63,8 +63,40 @@ class DrawTools extends Control {
         }
     }
 
-    // tslint:disable-next-line:no-empty
     private renderPanel(): void {
+        // while (this.panel.firstChild) {
+        //     this.panel.removeChild(this.panel.firstChild);
+        // }
+
+        let form = this.createDrawToolsForm();
+        form.style.removeProperty("display");
+        this.panel.appendChild(form);
+    }
+
+    private createDrawToolsForm(): HTMLFormElement {
+        const form = document.createElement("form");
+        form.setAttribute("id", "options-form");
+        form.style.cssText = "display: none";
+        form.autocomplete = "off";
+
+        const radioButtons = document.createElement("div");
+        radioButtons.setAttribute("id", "radioButtons");
+
+        const poly = document.createElement("div");
+        poly.className = "radio";
+        const polyLabel = document.createElement("label");
+        polyLabel.innerHTML = " Fläche zeichnen ";
+        const polyInput = document.createElement("input");
+        polyInput.setAttribute("type", "radio");
+        polyInput.setAttribute("name", "interaction");
+        polyInput.setAttribute("value", "Polygon");
+        // polyLabel.appendChild(polyInput);
+        poly.appendChild(polyInput);
+        poly.appendChild(polyLabel);
+
+        radioButtons.appendChild(poly);
+        form.appendChild(radioButtons);
+        return form;
     }
 }
 
