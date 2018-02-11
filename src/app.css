@@ -1,6 +1,7 @@
 @import "~ol/ol.css";
 @import "./css/ol-layerswitcher.css";
 @import "./css/ol-popup.css";
+@import "./css/ol-drawtools.css";
 
 body {
     padding: 10px;

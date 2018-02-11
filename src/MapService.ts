@@ -25,6 +25,7 @@ import { LandkreiseLayer, SachsenWMSDop, Siedlung, Gemeinden } from "./Layers";
 import { KartenFeatures } from "./Features";
 import { Popup } from "./Popup";
 import { InfoOverlay } from "./InfoOverlay";
+import { DrawTools } from "./DrawTools";
 
 class MapService implements IMapService {
     private popup: Popup;
@@ -108,6 +109,9 @@ class MapService implements IMapService {
             // https://openlayers.org/en/latest/examples/moveend.html
             infoOverlay.setPosition(this.map.getView().getCenter());
         });
+
+        const drawtools = new DrawTools();
+        this.map.addControl(drawtools);
     }
 
     public jumpToPosition(lon: number, lat: number): boolean {
