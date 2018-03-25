@@ -1,4 +1,5 @@
 import Control from "ol/control/control";
+import { olx } from "openlayers";
 
 class DrawTools extends Control {
     private element: HTMLDivElement;

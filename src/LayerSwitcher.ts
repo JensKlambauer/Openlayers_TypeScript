@@ -1,4 +1,5 @@
 import Control from "ol/control/control";
+import { olx } from "openlayers";
 // import Ol from "ol";
 // import Map from "ol/map";
 // import Base from "ol/layer/base";

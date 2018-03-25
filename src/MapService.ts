@@ -180,7 +180,7 @@ class MapService implements IMapService {
             }
         };
 
-        map.once("postcompose", function (event) {
+        map.once("postcompose", function (event: any) {
             source.on("tileloadstart", tileLoadStart);
             source.on("tileloadend", tileLoadEnd, event.context.canvas);
             source.on("tileloaderror", tileLoadEnd, event.context.canvas);

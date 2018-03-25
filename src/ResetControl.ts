@@ -1,6 +1,7 @@
 import Ol from "ol";
 // import Map from "ol/map";
 import Control from "ol/control/control";
+import { olx } from "openlayers";
 
 interface IResetOptions extends olx.control.ControlOptions {
     center?: Ol.Coordinate;

@@ -13,6 +13,7 @@ import WKT from "ol/format/wkt";
 import ls from "ol/loadingstrategy";
 // import Extent from "ol/extent";
 import * as $ from "jquery";
+import { olx } from "openlayers";
 
 class KartenFeatures extends Vector {
     private vectorSource: VectorSource;

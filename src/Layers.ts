@@ -6,6 +6,7 @@ import Fill from "ol/style/fill";
 import Stroke from "ol/style/stroke";
 import TileLayer from "ol/layer/tile";
 import TileWMS from "ol/source/tilewms";
+import { olx } from "openlayers";
 
 class LandkreiseLayer extends Vector {
     private title: string;

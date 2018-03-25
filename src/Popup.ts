@@ -1,5 +1,6 @@
 import Overlay from "ol/overlay";
 import Ol from "ol";
+import { olx } from "openlayers";
 
 class Popup extends Overlay {
 
