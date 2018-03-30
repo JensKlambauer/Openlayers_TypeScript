@@ -85,19 +85,27 @@ class DrawTools extends Control {
         form.style.cssText = "display: none";
         form.autocomplete = "off";
 
-        const radioButtons = document.createElement("div");
-        radioButtons.setAttribute("id", "radioButtons");
-        radioButtons.appendChild(this.createInputElement("radio", "Polygon", "Fläche zeichen"));
-        radioButtons.appendChild(this.createInputElement("radio", "Linie", "Linie zeichen"));
-        radioButtons.appendChild(this.createInputElement("radio", "modify", "Ändern"));
-        radioButtons.appendChild(this.createInputElement("radio", "remove", "Löschen"));
-        form.appendChild(radioButtons);
+        const ulLbl = document.createElement("ul");
+        ulLbl.setAttribute("id", "radioButtons");
+        const li = document.createElement("li");
+        li.className = "group";
+        const label = document.createElement("label");
+        label.innerHTML = "Zeichenfunktionen";
+        li.appendChild(label);
+        const ul = document.createElement("ul");
+        li.appendChild(ul);
+        ul.appendChild(this.createInputElement("radio", "Polygon", "Fläche/Polygon"));
+        ul.appendChild(this.createInputElement("radio", "Linie", "Linie"));
+        ul.appendChild(this.createInputElement("radio", "modify", "Ändern"));
+        ul.appendChild(this.createInputElement("radio", "remove", "Löschen"));
+        ulLbl.appendChild(li);
+        form.appendChild(ulLbl);
         return form;
     }
 
     private createInputElement(type: string, action: string, label?: string): HTMLElement {
-        const divElem = document.createElement("div");
-        divElem.className = "radio";
+        const li = document.createElement("li");
+        li.className = "layer";
         const labelElem = document.createElement("label");
         const inputElem = document.createElement("input");
         inputElem.setAttribute("type", type);
@@ -105,8 +113,8 @@ class DrawTools extends Control {
         inputElem.setAttribute("value", action);
         labelElem.appendChild(inputElem);
         labelElem.innerHTML += " " + label + " ";
-        divElem.appendChild(labelElem);
-        return divElem;
+        li.appendChild(labelElem);
+        return li;
     }
 }
 

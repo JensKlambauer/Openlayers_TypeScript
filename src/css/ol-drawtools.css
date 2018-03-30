@@ -49,3 +49,47 @@
 .draw-tools.shown button {
     display: none;
 }
+
+.draw-tools ul {
+    padding-left: 1em;
+    list-style: none;
+}
+
+.draw-tools li.group {
+    padding-top: 5px;
+}
+
+.draw-tools li.group > label {
+    font-weight: bold;
+}
+
+.draw-tools li.layer {
+    display: table;
+}
+
+.draw-tools li.layer label, .draw-tools li.layer input {
+    display: table-cell;
+    vertical-align: sub;
+}
+
+.draw-tools label.disabled {
+    opacity:0.4;
+}
+
+.draw-tools input {
+    margin: 4px;
+}
+
+.draw-tools.touch ::-webkit-scrollbar {
+    width: 4px;
+}
+
+.draw-tools.touch ::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+}
+
+.draw-tools.touch ::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+}
