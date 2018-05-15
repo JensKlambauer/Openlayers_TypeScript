@@ -1,13 +1,17 @@
 import Control from "ol/control/control";
+import Draw from "ol/interaction/draw";
+import Vector from "ol/layer/vector";
 import { olx } from "openlayers";
 
 class DrawTools extends Control {
+    private polygon: Draw;
     private element: HTMLDivElement;
     private panel: HTMLDivElement;
     private shownClassName: string;
     private hiddenClassName: string;
+    private vector: Vector;
 
-    constructor(optOptions?: olx.control.ControlOptions) {
+    constructor(vector: Vector, optOptions?: olx.control.ControlOptions) {
         const options = optOptions || {};
 
         const element = document.createElement("div");
@@ -16,6 +20,7 @@ class DrawTools extends Control {
         }
 
         super(options);
+        this.vector = vector;
 
         this.shownClassName = "shown";
         const hiddenClassName = "ol-unselectable ol-control draw-tools";
@@ -45,10 +50,17 @@ class DrawTools extends Control {
             }
         };
 
-        // Control.call(this, {
-        //     element: element,
-        //     target: options.target
-        // });
+        this.polygon = new Draw({
+            maxPoints: 5,
+            minPoints: 3,
+            source: this.vector.getSource(),
+            // freehand: true,
+            type: /** @type {ol.geom.GeometryType} */ ("Polygon")
+        });
+    }
+
+    public Polygon(): Draw {
+        return this.polygon;
     }
 
     private showPanel(): void {
@@ -84,6 +96,11 @@ class DrawTools extends Control {
         form.setAttribute("id", "options-form");
         form.style.cssText = "display: none";
         form.autocomplete = "off";
+        form.onchange = (ev: Event): any => {
+            console.log("onchange");
+            let target: any = ev.target;
+            console.log("value " + target.value);
+        };
 
         const ulLbl = document.createElement("ul");
         ulLbl.setAttribute("id", "radioButtons");
@@ -95,7 +112,7 @@ class DrawTools extends Control {
         const ul = document.createElement("ul");
         li.appendChild(ul);
         ul.appendChild(this.createInputElement("radio", "Polygon", "Fläche/Polygon"));
-        ul.appendChild(this.createInputElement("radio", "Linie", "Linie"));
+        ul.appendChild(this.createInputElement("radio", "LineString", "Linie"));
         ul.appendChild(this.createInputElement("radio", "modify", "Ändern"));
         ul.appendChild(this.createInputElement("radio", "remove", "Löschen"));
         ulLbl.appendChild(li);

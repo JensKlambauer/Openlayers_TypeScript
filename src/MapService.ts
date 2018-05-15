@@ -26,6 +26,8 @@ import { KartenFeatures } from "./Features";
 import { Popup } from "./Popup";
 import { InfoOverlay } from "./InfoOverlay";
 import { DrawTools } from "./DrawTools";
+import feature from "ol/render/feature";
+import Snap from "ol/interaction/snap";
 
 class MapService implements IMapService {
     private popup: Popup;
@@ -110,8 +112,18 @@ class MapService implements IMapService {
             infoOverlay.setPosition(this.map.getView().getCenter());
         });
 
-        const drawtools = new DrawTools();
+        const drawtools = new DrawTools(this.kartenFeats);
         this.map.addControl(drawtools);
+        const polygon = drawtools.Polygon();
+        this.map.addInteraction(polygon);
+        polygon.setActive(true);
+        // The snap interaction must be added after the Modify and Draw interactions
+        // in order for its map browser event handlers to be fired first. Its handlers
+        // are responsible of doing the snapping.
+        const snap = new Snap({
+            source: this.kartenFeats.getSource()
+        });
+        this.map.addInteraction(snap);
     }
 
     public jumpToPosition(lon: number, lat: number): boolean {

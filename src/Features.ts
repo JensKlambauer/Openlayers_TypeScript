@@ -36,8 +36,8 @@ class KartenFeatures extends Vector {
         // Style
         const style = new Style({
             fill: new Fill({ color: "rgba(255, 0, 0, 0.1)" }),
-            stroke: new Stroke({ color: "#ff0000", width: 2 }),
-            image: new Circle({fill: new Fill({color: "#ff0000"}), radius: 5 })
+            image: new Circle({fill: new Fill({color: "#ff0000"}), radius: 5 }),
+            stroke: new Stroke({ color: "#ff0000", width: 2 })
         });
         this.setStyle(style);
         // super({source: vectorSource, visible: false, style: style });
