@@ -12,7 +12,7 @@ import Feature from "ol/feature";
 import WKT from "ol/format/wkt";
 import ls from "ol/loadingstrategy";
 // import Extent from "ol/extent";
-import * as $ from "jquery";
+// import * as $ from "jquery";
 import { olx } from "openlayers";
 
 class KartenFeatures extends Vector {
@@ -54,60 +54,84 @@ class KartenFeatures extends Vector {
         });
     }
 
-    private async callAjaxData(url: string, id: number): Promise<any> {
-        const ret = { "error": 1, "message": "Fehler - Abfrage nicht erfolgreich." };
-        const dataset = await $.ajax({
-            url: url,
-            // crossDomain: true,
-            type: "POST",
-            dataType: "json",
-            // beforeSend: function (xhrObj) {
-            //     xhrObj.setRequestHeader("Content-Type", "application/json");
-            // },
-            contentType: "application/json; charset=utf-8",
-            async: true, // entweder parameter oder default false
-            data: JSON.stringify(id),
-            // data: JSON.stringify({ "idProj": id }),
-            // error: function (errorThrown) {
-            //     // alert("AJAX fehlgeschlagen!");
-            //     console.log("AJAX fehlgeschlagen!");
-            //     // return ret;
-            // }
-        }).catch(() => { console.log("Catch Error"); return ret; });
-        // .then((data) => {
-        //     return data;
-        // });
-
-        return dataset;
-    }
-
     private loader = (extent: ol.Extent, resolution: number, proj: ol.proj.Projection): void => {
         const url = "http://localhost:61000/api/feature/GetFeatures";
         // const daten = JSON.stringify({ "IdProj": 5, "Content": "Täßste" });
         (async () => {
             const feats = new Array<Feature>();
-            const res = await this.callAjaxData(url, 18);
-            // this.callAjaxData(url, 18).then( (res) => {
-            if (res.error === 0) {
-                const format = new WKT();
-                res.data.features.forEach((feat) => {
-                    const feature = format.readFeature(feat.wkt, {
-                        dataProjection: "EPSG:4326",
-                        featureProjection: "EPSG:3857"
+            const responce = await this.callAjaxData2(url, 7);
+            if (responce) {
+                const res = JSON.parse(responce);
+                // this.callAjaxData(url, 18).then( (res) => {
+                if (res.error === 0) {
+                    const format = new WKT();
+                    res.data.features.forEach((feat) => {
+                        const feature = format.readFeature(feat.wkt, {
+                            dataProjection: "EPSG:4326",
+                            featureProjection: "EPSG:3857"
+                        });
+                        if (feature) {
+                            feature.setId(feat.Id);
+                            feats.push(feature);
+                        }
                     });
-                    if (feature) {
-                        feature.setId(feat.Id);
-                        feats.push(feature);
-                    }
-                });
-                this.addFeatures(feats);
-                // }}).catch(() => { console.log("Fehler"); });
+                    this.addFeatures(feats);
+                    // }}).catch(() => { console.log("Fehler"); });
+                } else {
+                    console.log("Fehler - " + res.message);
+                }
             } else {
-                console.log(res.message);
+                console.log("Fehler - Server");
             }
         })();
         // console.log("Loader Call");
     }
+
+    private async  callAjaxData2(url: string, id: number): Promise<any>  {
+        const ret = { "error": 1, "message": "Fehler - Abfrage nicht erfolgreich." };
+        let dataset = await new Promise(resolve => {
+            let xhr = new XMLHttpRequest();
+            xhr.open("POST", url, true);
+            xhr.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+            xhr.onload = function(e) {
+              resolve(xhr.response);
+            };
+            xhr.onerror = function () {
+              resolve(undefined);
+              console.error("** An error occurred during the XMLHttpRequest");
+            };
+            xhr.send(JSON.stringify(id));
+         });
+
+         return dataset;
+    }
+
+    // private async callAjaxData(url: string, id: number): Promise<any> {
+    //     const ret = { "error": 1, "message": "Fehler - Abfrage nicht erfolgreich." };
+    //     const dataset = await $.ajax({
+    //         url: url,
+    //         // crossDomain: true,
+    //         type: "POST",
+    //         dataType: "json",
+    //         // beforeSend: function (xhrObj) {
+    //         //     xhrObj.setRequestHeader("Content-Type", "application/json");
+    //         // },
+    //         contentType: "application/json; charset=utf-8",
+    //         async: true, // entweder parameter oder default false
+    //         data: JSON.stringify(id),
+    //         // data: JSON.stringify({ "idProj": id }),
+    //         // error: function (errorThrown) {
+    //         //     // alert("AJAX fehlgeschlagen!");
+    //         //     console.log("AJAX fehlgeschlagen!");
+    //         //     // return ret;
+    //         // }
+    //     }).catch(() => { console.log("Catch Error"); return ret; });
+    //     // .then((data) => {
+    //     //     return data;
+    //     // });
+
+    //     return dataset;
+    // }
 }
 
 export { KartenFeatures };
