@@ -1,4 +1,6 @@
 // import "ol/ol.css";
+import "./app.css";
+
 import { Karte } from "./MapService";
 import { Searchresult } from "./OsmSearchresults";
 import SearchService from "./SearchService";

@@ -20,7 +20,7 @@ module.exports = {
     devtool: "source-map",
     entry: {
         app: path.join(root, "src", "app.ts"),
-        styles: path.join(root, "src", "app.css"),
+        // styles: path.join(root, "src", "app.css"),
     },
     module: {
         rules: [
