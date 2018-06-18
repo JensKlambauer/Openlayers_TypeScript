@@ -18,7 +18,11 @@
         "sourceMap": true,
         "watch": true,
         "allowJs": true,
-        "target": "es5"
+        "target": "es5",
+        "typeRoots": [
+            "./src/viewer-openlayers/@types/",
+            "./node_modules/@types/"
+        ]
     },
     "include": [
         "./lib/**/*",
@@ -27,9 +31,5 @@
     "exclude": [
         "./node_modules",
         "./**/*.spec.ts"
-    ],
-    "typeRoots": [
-        "./src/viewer-openlayers/@types/",
-        "./node_modules/@types/"
     ]
 }
