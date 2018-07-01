@@ -1,5 +1,4 @@
 import Overlay from "ol/overlay";
-import Ol from "ol";
 import { olx } from "openlayers";
 
 class Popup extends Overlay {
@@ -46,7 +45,7 @@ class Popup extends Overlay {
         this.setElement(this.container);
     }
 
-    public show (coord: Ol.Coordinate, html: any): void {
+    public show (coord: ol.Coordinate, html: any): void {
         if (html instanceof HTMLElement) {
             this.content.innerHTML = "";
             this.content.appendChild(html);

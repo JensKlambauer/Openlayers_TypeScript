@@ -20,7 +20,7 @@
         "allowJs": true,
         "target": "es5",
         "typeRoots": [
-            "./src/viewer-openlayers/@types/",
+            // "./src/viewer-openlayers/@types/",
             "./node_modules/@types/"
         ]
     },

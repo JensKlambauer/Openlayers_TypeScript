@@ -8,7 +8,7 @@ import SearchService from "./SearchService";
 let map: Karte = null;
 
 ready(function () {
-    console.log("Karte ready!");
+    // console.log("Karte ready!");
     map = new Karte();
     map.initMap();
 });
