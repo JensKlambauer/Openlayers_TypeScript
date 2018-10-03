@@ -2,7 +2,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const path = require("path");
 const webpack = require("webpack");
-const reflect = require("reflect-metadata");
 
 const root = path.resolve(__dirname);
 const dist = path.join(root, "dist");
@@ -61,11 +60,12 @@ module.exports = {
         }),
         new CopyWebpackPlugin([
             { from: "content",  to: "files" }
-        ])
+        ]),
+        new webpack.HotModuleReplacementPlugin()
     ],
     devServer: {
         contentBase: path.join(__dirname, "dist"),
-        compress: true,
+        // compress: true,
         port: 9000
     }
 };

@@ -112,18 +112,18 @@ class MapService implements IMapService {
             infoOverlay.setPosition(this.map.getView().getCenter());
         });
 
-        const drawtools = new DrawTools(this.kartenFeats);
-        this.map.addControl(drawtools);
-        const polygon = drawtools.Polygon();
-        this.map.addInteraction(polygon);
-        polygon.setActive(true);
+        // const drawtools = new DrawTools(this.kartenFeats);
+        // this.map.addControl(drawtools);
+        // const polygon = drawtools.Polygon();
+        // this.map.addInteraction(polygon);
+        // polygon.setActive(true);
         // The snap interaction must be added after the Modify and Draw interactions
         // in order for its map browser event handlers to be fired first. Its handlers
         // are responsible of doing the snapping.
-        const snap = new Snap({
-            source: this.kartenFeats.getSource()
-        });
-        this.map.addInteraction(snap);
+        // const snap = new Snap({
+        //     source: this.kartenFeats.getSource()
+        // });
+        // this.map.addInteraction(snap);
     }
 
     public jumpToPosition(lon: number, lat: number): boolean {
@@ -173,14 +173,14 @@ class MapService implements IMapService {
                     targetCanvas.getContext("2d").drawImage(canvas,
                         0, 0, canvas.width, canvas.height,
                         0, 0, targetCanvas.width, targetCanvas.height);
-                    if (navigator.msSaveBlob) {
-                        navigator.msSaveBlob(targetCanvas.msToBlob(), "karte.png");
-                    } else {
-                        targetCanvas.toBlob(function (blob) {
-                            saveAs(blob, "karte.png");
-                            console.log("saveAs " + map.getSize());
-                        });
-                    }
+                    // if (navigator.msSaveBlob) {
+                    //     navigator.msSaveBlob(targetCanvas.msToBlob(), "karte.png");
+                    // } else {
+                    targetCanvas.toBlob(function (blob) {
+                        saveAs(blob, "karte.png");
+                        console.log("saveAs " + map.getSize());
+                    });
+                    // }
                     source.un("tileloadstart", tileLoadStart);
                     source.un("tileloadend", tileLoadEnd, canvas);
                     source.un("tileloaderror", tileLoadEnd, canvas);

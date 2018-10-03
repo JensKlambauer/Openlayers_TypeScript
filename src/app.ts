@@ -7,11 +7,11 @@ import SearchService from "./SearchService";
 
 let map: Karte = null;
 
-ready(function () {
-    // console.log("Karte ready!");
-    map = new Karte();
-    map.initMap();
-});
+// ready(function () {
+// console.log("Karte ready!");
+map = new Karte();
+map.initMap();
+// });
 
 document.querySelector("#ortsuchen").addEventListener("click", (evt) => {
     const suchTxt = document.querySelector<HTMLInputElement>("#suchText").value;
@@ -76,17 +76,17 @@ function jumptolonlat(lon?: number, lat?: number): any {
     return false;
 }
 
-function ready(callback) {
-    // in case the document is already rendered
-    if (document.readyState !== "loading") {
-        callback();
-    } else if (document.addEventListener) {
-        document.addEventListener("DOMContentLoaded", callback);
-    } else {
-        document.addEventListener("onreadystatechange", function () {
-            if (document.readyState === "complete") {
-                callback();
-            }
-        });
-    }
-}
+// function ready(callback) {
+//     // in case the document is already rendered
+//     if (document.readyState !== "loading") {
+//         callback();
+//     } else if (document.addEventListener) {
+//         document.addEventListener("DOMContentLoaded", callback);
+//     } else {
+//         document.addEventListener("onreadystatechange", function () {
+//             if (document.readyState === "complete") {
+//                 callback();
+//             }
+//         });
+//     }
+// }
