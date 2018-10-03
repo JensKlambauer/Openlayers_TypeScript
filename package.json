@@ -11,15 +11,14 @@
   "scripts": {
     "start": "webpack-dev-server --mode development --open --watch",
     "electron": "electron electron/app.js",
-    "build": "webpack",
+    "build": "webpack --mode production --config webpack.prod.js",
     "dev-server": "webpack-dev-server --mode development --no-colors --quiet",
     "rebuild": "rimraf dist/* && npm run build"
   },
   "dependencies": {
     "file-saver": "^1.3.8",
     "json2typescript": "^1.0.6",
-    "ol": "^4.6.5",
-    "web-request": "^1.0.7"
+    "ol": "^4.6.5"
   },
   "devDependencies": {
     "@types/file-saver": "^1.3.0",
@@ -28,6 +27,7 @@
     "copy-webpack-plugin": "^4.5.2",
     "css-loader": "^1.0.0",
     "electron": "^1.8.8",
+    "extract-css-chunks-webpack-plugin": "^3.1.3",
     "file-loader": "^2.0.0",
     "html-webpack-plugin": "^3.2.0",
     "rimraf": "^2.6.2",
@@ -36,6 +36,7 @@
     "tslint": "^5.11.0",
     "tslint-loader": "^3.6.0",
     "typescript": "^3.1.1",
+    "uglifyjs-webpack-plugin": "^2.0.1",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2",
     "webpack-dev-middleware": "^3.4.0",

@@ -1,5 +1,5 @@
 import { IOsmSearchresult, Searchresult } from "./OsmSearchresults";
-import * as WebRequest from "web-request";
+// import * as WebRequest from "web-request";
 import {JsonConvert, OperationMode, ValueCheckingMode} from "json2typescript";
 
 interface ISearchService {
@@ -18,7 +18,10 @@ class SearchService implements ISearchService {
             return;
         }
 
-        const data = await WebRequest.json<any>(this.url + suchtext).catch((err) => console.log(err) );
+        const getReq = await fetch(this.url + suchtext);
+        const data = await getReq.json();
+
+        // const data = await WebRequest.json<any>(this.url + suchtext).catch((err) => console.log(err) );
         if (data) {
             let jsonConvert: JsonConvert = new JsonConvert();
             // jsonConvert.operationMode = OperationMode.LOGGING; // print some debug data
