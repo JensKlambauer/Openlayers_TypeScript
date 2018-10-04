@@ -1,5 +1,5 @@
 import { IOsmSearchresult, Searchresult } from "./OsmSearchresults";
-// import * as WebRequest from "web-request";
+import "whatwg-fetch";
 import {JsonConvert, OperationMode, ValueCheckingMode} from "json2typescript";
 
 interface ISearchService {
@@ -18,7 +18,7 @@ class SearchService implements ISearchService {
             return;
         }
 
-        const getReq = await fetch(this.url + suchtext);
+        const getReq = await window.fetch(this.url + suchtext);
         const data = await getReq.json();
 
         // const data = await WebRequest.json<any>(this.url + suchtext).catch((err) => console.log(err) );

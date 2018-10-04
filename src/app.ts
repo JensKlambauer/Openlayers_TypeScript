@@ -1,5 +1,6 @@
 // import "ol/ol.css";
 import "./app.css";
+import "promise-polyfill/src/polyfill";
 
 import { Karte } from "./MapService";
 import { Searchresult } from "./OsmSearchresults";

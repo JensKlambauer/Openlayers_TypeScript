@@ -20,7 +20,7 @@ module.exports = {
     },
     devtool: "source-map",
     entry: {
-        app: path.join(root, "src", "app.ts")
+        app: ['whatwg-fetch', path.join(root, "src", "app.ts")]
     },
     module: {
         rules: [
