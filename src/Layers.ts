@@ -33,7 +33,7 @@ class SachsenWMSDop extends TileLayer {
         const src = new TileWMS({
             url: "https://geodienste.sachsen.de/wms_geosn_dop-rgb/guest",
             params: {
-                LAYERS: "sn_dop_020",
+                LAYERS: ["sn_dop_020"], // , "sn_dop_020_info"
                 SRID: "3857",
             },
         });

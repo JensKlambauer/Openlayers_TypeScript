@@ -18,7 +18,7 @@ class SearchService implements ISearchService {
             return;
         }
 
-        const getReq = await window.fetch(this.url + suchtext);
+        const getReq = await window.fetch(this.url + encodeURIComponent(suchtext));
         const data = await getReq.json();
 
         // const data = await WebRequest.json<any>(this.url + suchtext).catch((err) => console.log(err) );
